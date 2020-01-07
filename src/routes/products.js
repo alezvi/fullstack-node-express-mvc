@@ -6,21 +6,28 @@ const router = express.Router();
 const multer = require('multer')
 
 var storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, 'public/images/products')
+	destination: function (request, file, callback) {
+		callback(null, './public/images/products/');
 	},
-
-    filename: function (req, file, cb) {
-		return file.fieldname + '-' + Date.now() + path.extname(file.originalname)
-	},
-})
+	filename: function (request, file, callback) {
+		callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+	}
+});
 
 const upload = multer({storage: storage})
 
 // ************ Controller Require ************
 const productsController = require('../controllers/productsController');
 
-router.get('/', productsController.root); /* GET - All products */
+function ejemplo(req, res, next) {
+	if (req.ip === '::1') {
+		res.redirect(301, '/')
+	}
+
+	next()
+}
+
+router.get('/', ejemplo, productsController.root); /* GET - All products */
 router.get('/detail/:id/', productsController.detail); /* GET - Product detail */
 
 /*** CREATE ONE PRODUCT ***/ 

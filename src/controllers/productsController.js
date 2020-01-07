@@ -32,8 +32,9 @@ const controller = {
 		console.log(req.files)
 
 		products.push({
+			id: productsFilePath.length,
 			...req.body,
-			...{img: req.files.photo}
+			...{image: req.files[0].filename}
 		})
 
 		fs.writeFileSync(productsFilePath, JSON.stringify(products))
