@@ -6,6 +6,12 @@ const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
 
 const toThousand = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
+function generateProductCookie(req, product, delimiter = ',') {
+	let cookieProducts = req.cookies.product_ids ? req.cookies.product_ids.split(delimiter) : []
+	cookieProducts.push(product.id)
+	return cookieProducts.join(delimiter)
+}
+
 const controller = {
 	root: (req, res) => {
 		res.render('products', {
@@ -19,7 +25,10 @@ const controller = {
 			return p.id == req.params.id
 		})
 
-		res.render('detail', {product: product})
+		res
+			.cookie('product_ids', generateProductCookie(req, product))
+			.cookie('site', 'mercado liebre')
+			.render('detail', {product: product})
 	},
 
 	// Create - Form to create

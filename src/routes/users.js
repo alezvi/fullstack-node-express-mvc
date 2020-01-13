@@ -45,11 +45,16 @@ router.post('/login', userValidation, function (req, res) {
         })
     }
 
+    req.session.user = {
+        id: 1,
+        email: 'john@doe.com',
+    }
+
     res.redirect(301, '/users/welcome')
 })
 
-router.get('/welcome', function (req, res) {
-    res.end('bienvenido!')
+router.get('/welcome', logged ,function (req, res) {
+    res.end('bienvenido '+ req.session.user.email +'!')
 })
 
 module.exports = router
